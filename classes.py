@@ -5,8 +5,6 @@ import pickle
 class spool():
     '''Tracks info about a spool of filament'''
     material: str
-    # length: float #meters
-    # weight: float #grams
     diameter: float #mm
     oSize: float #m or g
     used: float #m or g
@@ -30,6 +28,25 @@ class spool():
         f = open(path, 'rb')
         self = pickle.load(f)
         return self
+    
+    def printDetails(self):
+        print('Spool: {}'.format(self.ID))
+        print('Brand: {}'.format(self.brand))
+        print('Color: {}'.format(self.color))
+        print('Material: {}'.format(self.material))
+        print('Diameter: {}'.format(self.diameter))
+        if self.useType == 'W':
+            print('Original weight: {}g'.format(self.oSize))
+            print('Used: {}g'.format(self.used))
+            print('Remaining: {}g'.format(self.oSize - self.used))
+        elif self.useType == 'L':
+            print('Original length: {}m'.format(self.oSize))
+            print('Used: {}m'.format(self.used))
+            print('Remaining: {}m'.format(self.oSize - self.used))
+        print('Minimum print temp: {}'.format(self.minTemp))
+        print('Maximum print temp: {}'.format(self.maxTemp))
+        print('Preferred temp: {}'.format(self.preferredTemp)) 
+
     
 @dataclass
 class gcode:

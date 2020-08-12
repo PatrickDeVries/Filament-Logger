@@ -70,6 +70,29 @@ def addGcode(gcodes, spools):
             print('Input Error')
     return gcodes
 
+def logPrint(gcodes, spools):
+    print('Which gcode would you like to log a print for?')
+    for i, g in enumerate(gcodes):
+        print('{}. {}'.format(i, g.ID))
+    gid = input('Enter a number.\n')
+    
+def showSpools(spools):
+    active = True
+    while(active):
+        for i, sp in enumerate(spools):
+            print("{}. {}".format(str(i), sp.ID))
+        choice = input('For details on a spool, enter its number. Enter anything else to return to options.\n')
+        active = False
+        for i, sp in enumerate(spools):
+            if choice == str(i):
+                active = True
+                sp.printDetails()        
+                
+            
+
+def showGcodes(spools):
+    pass
+
 # Read known spools
 spools = []
 f = open('./known_spools.csv', 'r')
@@ -85,14 +108,21 @@ for line in f:
 for g in gcodes:
     print(g)
 
-choice = input('What would you like to do?\n1. Add a spool\n2. Add a gcode\n')
-if choice == '1':
-    spools = addSpool(spools)
-elif choice == '2':
-    gcodes = addGcode(gcodes, spools)
-
-print(spools)
-print(gcodes)
+while (True):
+    choice = input('What would you like to do?\n1. Add a spool\n2. Add a gcode\n3. Log a print\n4. Show spools\n5. Show gcodes\n')
+    if choice == '1':
+        spools = addSpool(spools)
+    elif choice == '2':
+        gcodes = addGcode(gcodes, spools)
+    elif choice == '3':
+        logPrint(gcodes, spools)
+    elif choice == '4':
+        showSpools(spools)
+    elif choice == '5':
+        showGcodes(gcodes)
+    print(spools)
+    print(gcodes)
+    break
 
 
 
