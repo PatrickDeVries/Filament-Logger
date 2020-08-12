@@ -30,6 +30,7 @@ class spool():
         return self
     
     def printDetails(self):
+        print('\n-----------------------------------------------')
         print('Spool: {}'.format(self.ID))
         print('Brand: {}'.format(self.brand))
         print('Color: {}'.format(self.color))
@@ -46,6 +47,8 @@ class spool():
         print('Minimum print temp: {}'.format(self.minTemp))
         print('Maximum print temp: {}'.format(self.maxTemp))
         print('Preferred temp: {}'.format(self.preferredTemp)) 
+        print('-----------------------------------------------\n')
+
 
     
 @dataclass
@@ -54,6 +57,7 @@ class gcode:
     spoolID: str
     timesPrinted: int
     ID: str
+    useType: str
     xScale: float=100
     yScale: float=100
     zScale: float=100
@@ -69,5 +73,19 @@ class gcode:
         self = pickle.load(f)
         return self
     
+    def printDetails(self):
+        print('\n-----------------------------------------------')
+        print('Gcode: {}'.format(self.ID))
+        print('Sliced for spool: {}'.format(self.spoolID))
+        if self.useType == 'W':
+            print('Weight: {}'.format(self.size))
+        elif self.useType == 'L':
+            print('Length: {}'.format(self.size))
+        print('Times printed: {}'.format(self.timesPrinted))
+        print('X Scale (%): {}'.format(self.xScale))
+        print('Y Scale (%): {}'.format(self.yScale))
+        print('Z Scale (%): {}'.format(self.zScale))
+        print('-----------------------------------------------\n')
+
     
     

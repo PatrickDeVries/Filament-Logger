@@ -43,16 +43,16 @@ def addGcode(gcodes, spools):
             print('\nWhich spool is this sliced for?')
             for i, sp in enumerate(spools):
                 print("{}. {}".format(str(i), sp.ID))
-            snum = input("Enter a number.\n")
-            spid = spools[i].ID 
-            if spools[i].useType == 'W':
+            snum = int(input("Enter a number.\n"))
+            spid = spools[snum].ID 
+            if spools[snum].useType == 'W':
                 u = input('What is the approximate weight of the print (g)?\n')
-            elif spools[i].useType == 'L':
+            elif spools[snum].useType == 'L':
                 u = input('What is the approximate length of the print (m)?\n')
             pd = 0
             i = input("Enter a unique string that will identify this gcode to you.\n")
             
-            newGcode = gcode(u, spid, pd, i)
+            newGcode = gcode(u, spid, pd, i, spools[snum].useType)
             choice = input("Has this gcode been scaled? y/n\n")
             if choice.lower().strip() == 'y':
                 xsc = float(input('What percent is the x scaling?\n'))
@@ -62,7 +62,7 @@ def addGcode(gcodes, spools):
                 zsc = float(input('What percent is the z scaling?\n'))
                 newGcode.zScale = zsc     
                        
-            newGcode.pickleDump = newGcode.ID + '_gpickle'
+            newGcode.pickleDump = newGcode.ID + '_gpickle.p'
             gcodes.append(newGcode)
             print('added gcode')
             break
@@ -87,11 +87,18 @@ def showSpools(spools):
             if choice == str(i):
                 active = True
                 sp.printDetails()        
-                
-            
 
-def showGcodes(spools):
-    pass
+def showGcodes(gcodes):
+    active = True
+    while(active):
+        for i, g in enumerate(gcodes):
+            print("{}. {}".format(str(i), g.ID))
+        choice = input('For details on a gcode, enter its number. Enter anything else to return to options.\n')
+        active = False
+        for i, g in enumerate(gcodes):
+            if choice == str(i):
+                active = True
+                g.printDetails() 
 
 # Read known spools
 spools = []
@@ -105,11 +112,10 @@ f = open('./known_gcodes.csv', 'r')
 for line in f:
     gcodes.append(gcode.readFromFile(line.strip()))
 
-for g in gcodes:
-    print(g)
 
 while (True):
     choice = input('What would you like to do?\n1. Add a spool\n2. Add a gcode\n3. Log a print\n4. Show spools\n5. Show gcodes\n')
+    print('')
     if choice == '1':
         spools = addSpool(spools)
     elif choice == '2':
@@ -120,8 +126,6 @@ while (True):
         showSpools(spools)
     elif choice == '5':
         showGcodes(gcodes)
-    print(spools)
-    print(gcodes)
     break
 
 
