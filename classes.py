@@ -16,6 +16,7 @@ class spool():
     brand: str 
     logFile: str #path
     ID: str
+    pickleDump: str
     length: float=None
     weight:float=None
     
@@ -32,8 +33,8 @@ class spool():
     #     logFile = logf
     #     ID = i
     
-    def printToFile(self, path):
-        f = open(path, 'wb')
+    def printToFile(self):
+        f = open(self.pickleDump, 'wb')
         pickle.dump(self, f)
         return self
         
