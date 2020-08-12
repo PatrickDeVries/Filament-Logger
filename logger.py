@@ -2,7 +2,7 @@ from classes import gcode, spool
 import pandas as pd 
 
 def addSpool(spools):
-    print('current', spools)
+    # print('current', spools)
     while (True):
         try:
             m = input('What is the material?\n')
@@ -25,7 +25,7 @@ def addSpool(spools):
             i = input('Enter a string that will identify this spool to you.\n')
             
             newSpool = spool(m, d, o, u, minT, maxT, prefT, c, b, i, typ)
-            newSpool.pickleDump = i + '_pickle.p'
+            newSpool.pickleDump = i + '_spickle.p'
             newSpool.logFile = i + '_log.txt'
 
             spools.append(newSpool)
@@ -36,14 +36,39 @@ def addSpool(spools):
             print('Input Error')
     return spools
 
-
-# sp = spool('PLA', 1.75, 0, 195, 230, 195, 'black', 'MIKA3D', './blackPLA.txt', 'MIKA3D black PLA spool 1', 'spout.p', weight=500) 
-
-# sp.printToFile()
-
-# cp = spool.readFromFile('./spout.p')
-
-# print(sp, cp)
+def addGcode(gcodes, spools):
+    # print('current', gcodes)
+    while(True):
+        try:
+            print('\nWhich spool is this sliced for?')
+            for i, sp in enumerate(spools):
+                print("{}. {}".format(str(i), sp.ID))
+            snum = input("Enter a number.\n")
+            spid = spools[i].ID 
+            if spools[i].useType == 'W':
+                u = input('What is the approximate weight of the print (g)?\n')
+            elif spools[i].useType == 'L':
+                u = input('What is the approximate length of the print (m)?\n')
+            pd = 0
+            i = input("Enter a unique string that will identify this gcode to you.\n")
+            
+            newGcode = gcode(u, spid, pd, i)
+            choice = input("Has this gcode been scaled? y/n\n")
+            if choice.lower().strip() == 'y':
+                xsc = float(input('What percent is the x scaling?\n'))
+                newGcode.xScale = xsc
+                ysc = float(input('What percent is the y scaling?\n'))
+                newGcode.yScale = ysc
+                zsc = float(input('What percent is the z scaling?\n'))
+                newGcode.zScale = zsc     
+                       
+            newGcode.pickleDump = newGcode.ID + '_gpickle'
+            gcodes.append(newGcode)
+            print('added gcode')
+            break
+        except:
+            print('Input Error')
+    return gcodes
 
 # Read known spools
 spools = []
@@ -51,16 +76,23 @@ f = open('./known_spools.csv', 'r')
 for line in f:
     spools.append(spool.readFromFile(line.strip()))
     
-# for s in spools:
-#     print(s)
-#     print(s.pickleDump)
+# Read known gcodes
+gcodes = []
+f = open('./known_gcodes.csv', 'r')
+for line in f:
+    gcodes.append(gcode.readFromFile(line.strip()))
 
-choice = input('What would you like to do?\n1. Add a spool\n')
-print(spools)
+for g in gcodes:
+    print(g)
+
+choice = input('What would you like to do?\n1. Add a spool\n2. Add a gcode\n')
 if choice == '1':
     spools = addSpool(spools)
+elif choice == '2':
+    gcodes = addGcode(gcodes, spools)
 
 print(spools)
+print(gcodes)
 
 
 
@@ -69,4 +101,8 @@ f = open('./known_spools.csv', 'w')
 for s in spools:
     s.printToFile()
     print(s.pickleDump, file=f)
-    # f.write(s.pickleDump + '\n')
+    
+f = open('./known_gcodes.csv', 'w')
+for g in gcodes:
+    g.printToFile()
+    print(g.pickleDump, file=f)

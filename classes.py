@@ -33,11 +33,24 @@ class spool():
     
 @dataclass
 class gcode:
-    name: str
-    length: float #meters
-    spoolID: int
+    size: float #m or g
+    spoolID: str
     timesPrinted: int
     ID: str
+    xScale: float=100
+    yScale: float=100
+    zScale: float=100
+    pickleDump: str=None
+    
+    def printToFile(self):
+        f = open(self.pickleDump, 'wb')
+        pickle.dump(self, f)
+        return self
+        
+    def readFromFile(path):
+        f = open(path, 'rb')
+        self = pickle.load(f)
+        return self
     
     
     
