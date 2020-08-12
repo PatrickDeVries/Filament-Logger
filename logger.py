@@ -2,13 +2,36 @@ from classes import gcode, spool
 import pandas as pd 
 
 def addSpool(spools):
-    print('addSpool')
+    print('current', spools)
     while (True):
         try:
             m = input('What is the material?\n')
-            d = float(input('What is the diameter of the filament?\n'))
+            d = float(input('What is the diameter of the filament (mm)?\n'))
+            choice = input('Log use by 1. Weight or 2. Length?\n')
+            if choice == '1':
+                o = float(input('What is the original weight of the filament (g)?\n'))
+                u = float(input('How much filament has been used (g)?\n'))
+                typ = 'W'
+            elif choice == '1':    
+                o = float(input('What is the original length of the filament (m)?\n'))
+                u = float(input('How much filament has been used (m)?\n'))
+                typ = 'L'
+
+            minT = int(input('What is the minimum temperature (C)?\n'))
+            maxT = int(input('What is the maximum temperature (C)?\n'))
+            prefT = int(input('What is your preferred temeperature (C)?\n'))
+            c = input('What color is the filament?\n')
+            b = input('What brand is the filament?\n')
+            i = input('Enter a string that will identify this spool to you.\n')
             
-            break
+            newSpool = spool(m, d, o, u, minT, maxT, prefT, c, b, i, typ)
+            newSpool.pickleDump = i + '_pickle.p'
+            newSpool.logFile = i + '_log.txt'
+
+            spools.append(newSpool)
+            print('Added spool')
+
+            break     
         except:
             print('Input Error')
     return spools
@@ -33,13 +56,11 @@ for line in f:
 #     print(s.pickleDump)
 
 choice = input('What would you like to do?\n1. Add a spool\n')
-
+print(spools)
 if choice == '1':
     spools = addSpool(spools)
 
-
-
-
+print(spools)
 
 
 

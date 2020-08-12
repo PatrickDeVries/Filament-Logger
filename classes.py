@@ -8,30 +8,18 @@ class spool():
     # length: float #meters
     # weight: float #grams
     diameter: float #mm
-    used: float #meters
+    oSize: float #m or g
+    used: float #m or g
     minTemp: int #C
     maxTemp: int #C
     preferredTemp: int #C
     color: str 
     brand: str 
-    logFile: str #path
     ID: str
-    pickleDump: str
-    length: float=None
-    weight:float=None
-    
-    # def __init__(self, m, d, u, min, max, pref, c, b, logf, i, l=None, w=None):
-    #     material = m
-    #     length = l
-    #     diameter = d
-    #     used = u
-    #     minTemp = min
-    #     maxTemp = max
-    #     preferredTemp = pref
-    #     color = c
-    #     brand = b
-    #     logFile = logf
-    #     ID = i
+    useType: str
+    logFile: str=None #path
+    pickleDump: str=None
+
     
     def printToFile(self):
         f = open(self.pickleDump, 'wb')
