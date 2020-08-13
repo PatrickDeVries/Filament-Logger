@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 import pickle
 
 @dataclass
@@ -49,6 +50,25 @@ class spool():
         print('Preferred temp: {}'.format(self.preferredTemp)) 
         print('-----------------------------------------------\n')
 
+    def logPrint(self, gc):
+        now = datetime.now()
+        dateOfPrint = now.strftime("%m/%d/%Y, %H:%M:%S")
+        log = open(self.logFile, 'a')
+        if gc.useType == 'W':
+            unit = 'g'
+        elif gc.useType == 'L':
+            unit = 'm'
+        print('{}: Gcode {} printed using {}{} of filament\n'.format(dateOfPrint, gc.ID, gc.size, unit), file=log)
+        gc.timesPrinted = gc.timesPrinted + 1
+        self.used = self.used - gc.size
+        log.close()
+        
+    def viewLog(self):
+        log = open(self.logFile, 'r')
+        for line in log.readlines():
+            print(line)       
+        log.close()
+        
 
     
 @dataclass

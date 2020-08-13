@@ -74,7 +74,15 @@ def logPrint(gcodes, spools):
     print('Which gcode would you like to log a print for?')
     for i, g in enumerate(gcodes):
         print('{}. {}'.format(i, g.ID))
-    gid = input('Enter a number.\n')
+    gid = int(input('Enter a number.\n'))
+    for i, sp in enumerate(spools):
+        if sp.ID == gcodes[gid].spoolID:
+            spid = i
+    choice = input('Log a print for "{}" with spool "{}"? y/n\n'.format(gcodes[gid].ID, spools[spid].ID))
+    if choice.strip().lower() == 'y':
+        spools[spid].logPrint(gcodes[gid])
+        print('Logged print')
+    
     
 def showSpools(spools):
     active = True
@@ -99,6 +107,18 @@ def showGcodes(gcodes):
             if choice == str(i):
                 active = True
                 g.printDetails() 
+                
+def showLog(spools):
+    active = True
+    while(active):
+        for i, sp in enumerate(spools):
+            print("{}. {}".format(str(i), sp.ID))
+        choice = input('''To view a spool's log, enter its number. Enter anything else to return to options.\n''')
+        active = False
+        for i, sp in enumerate(spools):
+            if choice == str(i):
+                active = True
+                sp.viewLog()  
 
 # Read known spools
 spools = []
@@ -114,7 +134,7 @@ for line in f:
 
 
 while (True):
-    choice = input('What would you like to do?\n1. Add a spool\n2. Add a gcode\n3. Log a print\n4. Show spools\n5. Show gcodes\n')
+    choice = input('''What would you like to do? (Enter anything else to exit)\n1. Add a spool\n2. Add a gcode\n3. Log a print\n4. View a Spool's log\n5. Show spools\n6. Show gcodes\n''')
     print('')
     if choice == '1':
         spools = addSpool(spools)
@@ -123,10 +143,13 @@ while (True):
     elif choice == '3':
         logPrint(gcodes, spools)
     elif choice == '4':
-        showSpools(spools)
+        showLog(spools)
     elif choice == '5':
+        showSpools(spools)
+    elif choice == '6':
         showGcodes(gcodes)
-    break
+    else:
+        break
 
 
 
