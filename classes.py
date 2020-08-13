@@ -26,9 +26,12 @@ class spool():
         return self
         
     def readFromFile(path):
-        f = open(path, 'rb')
-        self = pickle.load(f)
-        return self
+        try:
+            f = open(path, 'rb')
+            self = pickle.load(f)
+            return self
+        except:
+            print('Spool .p file missing')
     
     def printDetails(self):
         print('\n-----------------------------------------------')
@@ -60,14 +63,19 @@ class spool():
             unit = 'm'
         print('{}: Gcode {} printed using {}{} of filament\n'.format(dateOfPrint, gc.ID, gc.size, unit), file=log)
         gc.timesPrinted = gc.timesPrinted + 1
-        self.used = self.used - gc.size
+        self.used = self.used + gc.size
         log.close()
         
     def viewLog(self):
-        log = open(self.logFile, 'r')
-        for line in log.readlines():
-            print(line)       
-        log.close()
+        try:
+            log = open(self.logFile, 'r')
+            print('-------------------------------------------------------------')
+            for line in log.readlines():
+                print(line)       
+            log.close()
+            print('-------------------------------------------------------------')
+        except:
+            print('No gcode logs for this spool yet.')
         
 
     
@@ -89,9 +97,12 @@ class gcode:
         return self
         
     def readFromFile(path):
-        f = open(path, 'rb')
-        self = pickle.load(f)
-        return self
+        try:
+            f = open(path, 'rb')
+            self = pickle.load(f)
+            return self
+        except:
+            print('Gcode .p file missing')
     
     def printDetails(self):
         print('\n-----------------------------------------------')

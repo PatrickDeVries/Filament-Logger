@@ -5,7 +5,9 @@ def addSpool(spools):
     # print('current', spools)
     while (True):
         try:
-            m = input('What is the material?\n')
+            m = input('What is the material? (enter "x" to cancel)\n')
+            if m == 'x':
+                break
             d = float(input('What is the diameter of the filament (mm)?\n'))
             choice = input('Log use by 1. Weight or 2. Length?\n')
             if choice == '1':
@@ -40,15 +42,20 @@ def addGcode(gcodes, spools):
     # print('current', gcodes)
     while(True):
         try:
-            print('\nWhich spool is this sliced for?')
+            print('\nWhich spool is this gcode sliced for?')
             for i, sp in enumerate(spools):
                 print("{}. {}".format(str(i), sp.ID))
-            snum = int(input("Enter a number.\n"))
+            snum = input('''Enter a number. (enter "x" to cancel)\n''')
+            if snum == 'x':
+                break
+            else:
+                snum = int(snum)
+            
             spid = spools[snum].ID 
             if spools[snum].useType == 'W':
-                u = input('What is the approximate weight of the print (g)?\n')
+                u = float(input('What is the approximate weight of the print (g)?\n'))
             elif spools[snum].useType == 'L':
-                u = input('What is the approximate length of the print (m)?\n')
+                u = float(input('What is the approximate length of the print (m)?\n'))
             pd = 0
             i = input("Enter a unique string that will identify this gcode to you.\n")
             
@@ -81,7 +88,13 @@ def logPrint(gcodes, spools):
     choice = input('Log a print for "{}" with spool "{}"? y/n\n'.format(gcodes[gid].ID, spools[spid].ID))
     if choice.strip().lower() == 'y':
         spools[spid].logPrint(gcodes[gid])
-        print('Logged print')
+        print('\nLogged print')
+        if spools[spid].useType == 'W':
+            unit = 'g'
+        elif spools[spid].useType == 'L':
+            unit = 'm'
+        print('Spool "{}" has {}{} of filament remaining.'.format(spools[spid].ID, (spools[spid].oSize - spools[spid].used), unit))
+        
     
     
 def showSpools(spools):
@@ -120,18 +133,38 @@ def showLog(spools):
                 active = True
                 sp.viewLog()  
 
+def saveState(spools, gcodes):
+    # Print current spool info
+    f = open('./known_spools.csv', 'w')
+    for s in spools:
+        s.printToFile()
+        print(s.pickleDump, file=f)
+        
+    # Print current gcode info
+    f = open('./known_gcodes.csv', 'w')
+    for g in gcodes:
+        g.printToFile()
+        print(g.pickleDump, file=f)
+
 # Read known spools
 spools = []
-f = open('./known_spools.csv', 'r')
-for line in f:
-    spools.append(spool.readFromFile(line.strip()))
-    
+try:
+    f = open('./known_spools.csv', 'r')
+    for line in f:
+        spools.append(spool.readFromFile(line.strip()))
+        f.close()
+except:
+    # print('error loading known spools')
+    f = open('./known_spools.csv', 'w')
+    f.close()
+
+
 # Read known gcodes
 gcodes = []
 f = open('./known_gcodes.csv', 'r')
 for line in f:
     gcodes.append(gcode.readFromFile(line.strip()))
-
+f.close()
 
 while (True):
     choice = input('''What would you like to do? (Enter anything else to exit)\n1. Add a spool\n2. Add a gcode\n3. Log a print\n4. View a Spool's log\n5. Show spools\n6. Show gcodes\n''')
@@ -150,16 +183,8 @@ while (True):
         showGcodes(gcodes)
     else:
         break
+    saveState(spools, gcodes)
 
 
 
-# Print current spool info
-f = open('./known_spools.csv', 'w')
-for s in spools:
-    s.printToFile()
-    print(s.pickleDump, file=f)
-    
-f = open('./known_gcodes.csv', 'w')
-for g in gcodes:
-    g.printToFile()
-    print(g.pickleDump, file=f)
+saveState(spools, gcodes)

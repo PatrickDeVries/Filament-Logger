@@ -1,0 +1,4 @@
+08/13/2020, 13:17:37: Gcode Fake Gcode 50 printed using 50.0g of filament
+
+08/13/2020, 13:21:05: Gcode Test Gcode 100 printed using 100.0g of filament
+
