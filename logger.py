@@ -14,7 +14,7 @@ def addSpool(spools):
                 o = float(input('What is the original weight of the filament (g)?\n'))
                 u = float(input('How much filament has been used (g)?\n'))
                 typ = 'W'
-            elif choice == '1':    
+            elif choice == '2':    
                 o = float(input('What is the original length of the filament (m)?\n'))
                 u = float(input('How much filament has been used (m)?\n'))
                 typ = 'L'
